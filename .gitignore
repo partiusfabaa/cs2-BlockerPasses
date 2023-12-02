@@ -59,3 +59,11 @@ BlockerPasses/bin/release/net7.0/publish/BlockerPasses.zip
 BlockerPasses/.idea/.idea.BlockerPasses.dir/.idea/discord-ij.xml
 *.xml
 *.info
+BlockerPasses/bin/release/net7.0/BlockerPasses.dll
+BlockerPasses/bin/release/net7.0/CounterStrikeSharp.API.dll
+BlockerPasses/bin/release/net7.0/publish/addons/counterstrikesharp/plugins/BlockerPasses/BlockerPasses.dll
+BlockerPasses/bin/release/net7.0/publish/BlockerPasses.dll
+BlockerPasses/bin/release/net7.0/publish/CounterStrikeSharp.API.dll
+BlockerPasses/obj/release/net7.0/BlockerPasses.dll
+BlockerPasses/obj/release/net7.0/ref/BlockerPasses.dll
+BlockerPasses/obj/release/net7.0/refint/BlockerPasses.dll
