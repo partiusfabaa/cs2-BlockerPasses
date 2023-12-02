@@ -9,14 +9,12 @@ Blocks passages if there are not a certain number of players on the server
 # Commands
 `css_bp_reload`, `!bp_reload` - reloads the configuration(only for `@css/root`)
 
-[TAGS](https://github.com/partiusfabaa/cs2-BlockerPasses/edit/main/README.md#Tags)
-
 # Config
 
 ```json
 {
   "Players": 10,      // The number of players after which the passes will open
-  "Message": "...",   // A message stating that the passageways are blocked ([TAGS](https://github.com/partiusfabaa/cs2-BlockerPasses/edit/main/README.md#Tags))
+  "Message": "...",   // A message stating that the passageways are blocked (all the tags are at the bottom)
   "Maps": {
     "de_mirage": [    // Map name
       {
