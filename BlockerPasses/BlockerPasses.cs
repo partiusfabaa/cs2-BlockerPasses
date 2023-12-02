@@ -82,7 +82,7 @@ public class BlockerPasses : BasePlugin
         return default!;
     }
 
-    private void SpawnProp(string propPath, int[] color, Vector origin, QAngle angles)
+    private void SpawnProp(string modelPath, int[] color, Vector origin, QAngle angles)
     {
         var prop = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic_override");
 
@@ -90,9 +90,9 @@ public class BlockerPasses : BasePlugin
 
         prop.Collision.SolidType = SolidType_t.SOLID_VPHYSICS;
         prop.Render = Color.FromArgb(color[0], color[1], color[2]);
-        prop.Teleport(origin, angles, new Vector());
+        prop.Teleport(origin, angles, new Vector(0, 0, 0));
         prop.DispatchSpawn();
-        Server.NextFrame(() => prop.SetModel(propPath));
+        Server.NextFrame(() => prop.SetModel(modelPath));
     }
 
     private Config LoadConfig()
@@ -152,7 +152,7 @@ public class BlockerPasses : BasePlugin
                             ModelPath =
                                 "models/props/de_nuke/hr_nuke/chainlink_fence_001/chainlink_fence_001_256_capped.vmdl",
                             Color = new[] { 255, 255, 255 },
-                            Origin = "--961.146 -14.2419 -43.0083",
+                            Origin = "-961.146 -14.2419 -43.0083",
                             Angles = "0 269.966 0"
                         }
                     }
