@@ -36,8 +36,6 @@ BlockerPasses/.idea/.idea.BlockerPasses.dir/.idea/discord-ij.xml
 BlockerPasses/.idea/.idea.BlockerPasses.dir/.idea/discord.xml
 BlockerPasses/.idea/.idea.BlockerPasses.dir/.idea/workspace.xml
 BlockerPasses/bin/release/net7.0/publish/BlockerPasses.zip
-BlockerPasses/CounterStrikeSharp.API.dll
-BlockerPasses/CounterStrikeSharp.API.dll
 BlockerPasses/obj/BlockerPasses.csproj.nuget.g.props
 BlockerPasses/obj/BlockerPasses.csproj.nuget.g.targets
 BlockerPasses/obj/Debug/net7.0/.NETCoreApp,Version=v7.0.AssemblyAttributes.cs
