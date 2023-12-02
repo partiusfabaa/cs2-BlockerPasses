@@ -24,7 +24,6 @@ BlockerPasses/obj/BlockerPasses.csproj.nuget.g.targets
 BlockerPasses/obj/project.assets.json
 BlockerPasses/obj/project.packagespec.json
 BlockerPasses/obj/rider.project.restore.info
-*.dll
 *.json
 *.pdb
 *.CopyComplete
