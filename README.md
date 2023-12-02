@@ -6,6 +6,8 @@ Blocks passages if there are not a certain number of players on the server
 3. Download [BlockerPasses](https://github.com/partiusfabaa/cs2-BlockerPasses/releases/tag/v1.0.0)
 4. Unzip the archive and upload it to the game server
 
+### After installing ResourcePrecacher, all the paths you write in the config, write them there as well
+
 # Commands
 `css_bp_reload`, `!bp_reload` - reloads the configuration(only for `@css/root`)
 
