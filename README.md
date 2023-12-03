@@ -63,6 +63,6 @@ Blocks passages if there are not a certain number of players on the server
 ```
 
 # Tags
-Colors - `{DEFAULT}`, `{RED}`, `{LIGHTPURPLE}`, `{GREEN}`, `{LIME}`, `{LIGHTGREEN}`, `{LIGHTRED}`, `{GRAY}`, `{LIGHTOLIVE}`, `{OLIVE}`, `{LIGHTBLUE}`, `{BLUE}`, `{PURPLE}`, `{GRAYBLUE}`
+Colors - `{DEFAULT}`, `{WHITE}`, `{DARKRED}`, `{GREEN}`, `{LIGHTYELLOW}`, `{LIGHTBLUE}`, `{OLIVE}`, `{LIME}`, `{RED}`, `{LIGHTPURPLE}`, `{PURPLE}`, `{GREY}`, `{YELLOW}`, `{GOLD}`, `{SILVER}`, `{BLUE}`, `{DARKBLUE}`, `{BLUEGREY}`, `{MAGENTA}`, `{LIGHTRED}`, `{ORANGE}`
 
 `{MINPLAYERS}` - minimum number of players
