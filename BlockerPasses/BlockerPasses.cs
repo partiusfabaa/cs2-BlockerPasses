@@ -6,6 +6,7 @@ using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Menu;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace BlockerPasses;
@@ -15,7 +16,7 @@ public class BlockerPasses : BasePlugin
 {
     public override string ModuleAuthor => "thesamefabius";
     public override string ModuleName => "Blocker Passes";
-    public override string ModuleVersion => "v1.0.0";
+    public override string ModuleVersion => "v1.0.1";
 
     private Config _config = null!;
 
@@ -57,8 +58,8 @@ public class BlockerPasses : BasePlugin
                 GetVectorFromString(entity.Origin), GetQAngleFromString(entity.Angles));
         }
 
-        Server.PrintToChatAll(ReplaceColorTags(
-            _config.Message.Replace("{MINPLAYERS}", configPlayers.ToString())));
+        Server.PrintToChatAll(
+            " " + ReplaceColorTags(_config.Message.Replace("{MINPLAYERS}", configPlayers.ToString())));
 
         return HookResult.Continue;
     }
@@ -71,8 +72,8 @@ public class BlockerPasses : BasePlugin
     {
         var split = values.Split(' ');
 
-        if (split.Length >= 3 && 
-            float.TryParse(split[0], out var x) && 
+        if (split.Length >= 3 &&
+            float.TryParse(split[0], out var x) &&
             float.TryParse(split[1], out var y) &&
             float.TryParse(split[2], out var z))
         {
@@ -162,6 +163,7 @@ public class BlockerPasses : BasePlugin
 
         File.WriteAllText(configPath,
             JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true }));
+
         return config;
     }
 
@@ -169,13 +171,19 @@ public class BlockerPasses : BasePlugin
     {
         string[] colorPatterns =
         {
-            "{DEFAULT}", "{RED}", "{LIGHTPURPLE}", "{GREEN}", "{LIME}", "{LIGHTGREEN}", "{LIGHTRED}", "{GRAY}",
-            "{LIGHTOLIVE}", "{OLIVE}", "{LIGHTBLUE}", "{BLUE}", "{PURPLE}", "{GRAYBLUE}"
+            "{DEFAULT}", "{WHITE}", "{DARKRED}", "{GREEN}", "{LIGHTYELLOW}", "{LIGHTBLUE}", "{OLIVE}", "{LIME}",
+            "{RED}", "{LIGHTPURPLE}", "{PURPLE}", "{GREY}", "{YELLOW}", "{GOLD}", "{SILVER}", "{BLUE}", "{DARKBLUE}",
+            "{BLUEGREY}", "{MAGENTA}", "{LIGHTRED}", "{ORANGE}"
         };
+
         string[] colorReplacements =
         {
-            "\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07", "\x08", "\x09", "\x10", "\x0B", "\x0C", "\x0E",
-            "\x0A"
+            $"{ChatColors.Default}", $"{ChatColors.White}", $"{ChatColors.Darkred}", $"{ChatColors.Green}",
+            $"{ChatColors.LightYellow}", $"{ChatColors.LightBlue}", $"{ChatColors.Olive}", $"{ChatColors.Lime}",
+            $"{ChatColors.Red}", $"{ChatColors.LightPurple}", $"{ChatColors.Purple}", $"{ChatColors.Grey}",
+            $"{ChatColors.Yellow}", $"{ChatColors.Gold}", $"{ChatColors.Silver}", $"{ChatColors.Blue}",
+            $"{ChatColors.DarkBlue}", $"{ChatColors.BlueGrey}", $"{ChatColors.Magenta}", $"{ChatColors.LightRed}",
+            $"{ChatColors.Orange}"
         };
 
         for (var i = 0; i < colorPatterns.Length; i ++)
