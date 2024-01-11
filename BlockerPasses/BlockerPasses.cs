@@ -17,7 +17,7 @@ public class BlockerPasses : BasePlugin
 {
     public override string ModuleAuthor => "thesamefabius";
     public override string ModuleName => "Blocker Passes";
-    public override string ModuleVersion => "v1.0.1";
+    public override string ModuleVersion => "v1.0.2";
 
     private Config _config = null!;
 
