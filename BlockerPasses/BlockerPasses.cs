@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Globalization;
 using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
@@ -55,7 +56,7 @@ public class BlockerPasses : BasePlugin
             var color = entity.Color;
 
             SpawnProp(entity.ModelPath, new[] { color[0], color[1], color[2] },
-                GetVectorFromString(entity.Origin), GetQAngleFromString(entity.Angles));
+                GetVectorFromString(entity.Origin), GetQAngleFromString(entity.Angles), entity.Scale);
         }
 
         Server.PrintToChatAll(
@@ -68,14 +69,14 @@ public class BlockerPasses : BasePlugin
 
     private QAngle GetQAngleFromString(string angles) => GetFromString(angles, (x, y, z) => new QAngle(x, y, z));
 
-    private T GetFromString<T>(string values, Func<float, float, float, T> createInstance)
+    private static T GetFromString<T>(string values, Func<float, float, float, T> createInstance)
     {
         var split = values.Split(' ');
 
         if (split.Length >= 3 &&
-            float.TryParse(split[0], out var x) &&
-            float.TryParse(split[1], out var y) &&
-            float.TryParse(split[2], out var z))
+            float.TryParse(split[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var x) &&
+            float.TryParse(split[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var y) &&
+            float.TryParse(split[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var z))
         {
             return createInstance(x, y, z);
         }
@@ -83,7 +84,7 @@ public class BlockerPasses : BasePlugin
         return default!;
     }
 
-    private void SpawnProp(string modelPath, int[] color, Vector origin, QAngle angles)
+    private void SpawnProp(string modelPath, int[] color, Vector origin, QAngle angles, float? entityScale)
     {
         var prop = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic_override");
 
@@ -94,6 +95,12 @@ public class BlockerPasses : BasePlugin
         prop.Teleport(origin, angles, new Vector(0, 0, 0));
         prop.DispatchSpawn();
         Server.NextFrame(() => prop.SetModel(modelPath));
+
+        var bodyComponent = prop.CBodyComponent;
+        if (bodyComponent is not { SceneNode: not null }) return;
+
+        if (entityScale != null && entityScale != 0.0f)
+            bodyComponent.SceneNode.GetSkeletonInstance().Scale = entityScale.Value;
     }
 
     private Config LoadConfig()
@@ -124,21 +131,24 @@ public class BlockerPasses : BasePlugin
                                 "models/props/de_dust/hr_dust/dust_windows/dust_rollupdoor_96x128_surface_lod.vmdl",
                             Color = new[] { 30, 144, 255 },
                             Origin = "-1600.46 -741.124 -172.965",
-                            Angles = "0 180 0"
+                            Angles = "0 180 0",
+                            Scale = 0.0f
                         },
                         new()
                         {
                             ModelPath = "models/props/de_mirage/small_door_b.vmdl",
                             Color = new[] { 255, 255, 255 },
                             Origin = "588.428 704.941 -136.517",
-                            Angles = "0 270.256 0"
+                            Angles = "0 270.256 0",
+                            Scale = 0.0f
                         },
                         new()
                         {
                             ModelPath = "models/props/de_mirage/large_door_c.vmdl",
                             Color = new[] { 255, 255, 255 },
                             Origin = "-1007.87 -359.812 -323.64",
-                            Angles = "0 270.106 0"
+                            Angles = "0 270.106 0",
+                            Scale = 0.0f
                         },
                         new()
                         {
@@ -146,7 +156,8 @@ public class BlockerPasses : BasePlugin
                                 "models/props/de_nuke/hr_nuke/chainlink_fence_001/chainlink_fence_001_256_capped.vmdl",
                             Color = new[] { 255, 255, 255 },
                             Origin = "-961.146 -14.2419 -169.489",
-                            Angles = "0 269.966 0"
+                            Angles = "0 269.966 0",
+                            Scale = 0.0f
                         },
                         new()
                         {
@@ -154,7 +165,8 @@ public class BlockerPasses : BasePlugin
                                 "models/props/de_nuke/hr_nuke/chainlink_fence_001/chainlink_fence_001_256_capped.vmdl",
                             Color = new[] { 255, 255, 255 },
                             Origin = "-961.146 -14.2419 -43.0083",
-                            Angles = "0 269.966 0"
+                            Angles = "0 269.966 0",
+                            Scale = 0.0f
                         }
                     }
                 }
@@ -202,8 +214,9 @@ public class Config
 
 public class Entities
 {
-    public string ModelPath { get; init; } = null!;
-    public int[] Color { get; init; } = null!;
-    public string Origin { get; init; } = null!;
-    public string Angles { get; init; } = null!;
+    public required string ModelPath { get; init; }
+    public int[] Color { get; init; } = { 255, 255, 255 };
+    public required string Origin { get; init; }
+    public required string Angles { get; init; }
+    public float? Scale { get; init; }
 }
