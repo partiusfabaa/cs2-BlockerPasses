@@ -44,10 +44,10 @@ public class BlockerPasses : BasePlugin
     private HookResult EventRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         var playersCount = Utilities.GetPlayers()
-            .Where(u => u.TeamNum != (int)CsTeam.None && u.TeamNum != (int)CsTeam.Spectator).ToList();
+            .Where(u => u.PlayerPawn.Value != null && u.TeamNum != (int)CsTeam.None &&
+                        u.TeamNum != (int)CsTeam.Spectator && u.PlayerPawn.Value.IsValid).ToList();
 
-        var configPlayers = _config.Players;
-        if (playersCount.Count > configPlayers) return HookResult.Continue;
+        if (playersCount.Count >= _config.Players) return HookResult.Continue;
 
         if (!_config.Maps.TryGetValue(Server.MapName, out var entitiesMap)) return HookResult.Continue;
 
@@ -60,7 +60,7 @@ public class BlockerPasses : BasePlugin
         }
 
         Server.PrintToChatAll(
-            " " + ReplaceColorTags(_config.Message.Replace("{MINPLAYERS}", configPlayers.ToString())));
+            " " + ReplaceColorTags(_config.Message.Replace("{MINPLAYERS}", _config.Players.ToString())));
 
         return HookResult.Continue;
     }
