@@ -49,7 +49,7 @@ Blocks passages if there are not a certain number of players on the server
         "Origin": "-961.146 -14.2419 -43.0083",
         "Angles": "0 269.966 0"
       }            
-    ],       //if you need to add more cards, put a comma. But the last map doesn't need one! (example)
+    ],       //if you need to add more maps, put a comma. But the last map doesn't need one! (example)
     "de_dust2": [
      {
         "ModelPath": "",
