@@ -3,28 +3,34 @@ using System.Globalization;
 using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Menu;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace BlockerPasses;
 
-[MinimumApiVersion(90)]
 public class BlockerPasses : BasePlugin
 {
     public override string ModuleAuthor => "thesamefabius";
     public override string ModuleName => "Blocker Passes";
-    public override string ModuleVersion => "v1.0.3";
+    public override string ModuleVersion => "v1.0.5";
 
     private Config _config = null!;
+    private readonly List<CEntityInstance> _allProps = [];
 
     public override void Load(bool hotReload)
     {
         _config = LoadConfig();
         RegisterEventHandler<EventRoundStart>(EventRoundStart);
+        RegisterListener<Listeners.OnServerPrecacheResources>(manifest =>
+        {
+            foreach (var entities in _config.Maps.Values.SelectMany(list => list))
+            {
+                manifest.AddResource(entities.ModelPath);
+            }
+        });
     }
 
     [RequiresPermissions("@css/root")]
@@ -43,24 +49,31 @@ public class BlockerPasses : BasePlugin
 
     private HookResult EventRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        foreach (var entity in _allProps.Where(entity => entity.IsValid))
+        {
+            entity.AcceptInput("Kill");
+        }
+
+        _allProps.Clear();
+
         var playersCount = Utilities.GetPlayers()
-            .Where(u => u.PlayerPawn.Value != null && u.TeamNum != (int)CsTeam.None &&
-                        u.TeamNum != (int)CsTeam.Spectator && u.PlayerPawn.Value.IsValid).ToList();
+            .Where(u => u.PlayerPawn.Value != null &&
+                        u.PlayerPawn.Value.IsValid &&
+                        u.Team is CsTeam.CounterTerrorist or CsTeam.Terrorist).ToList();
 
-        if (playersCount.Count >= _config.Players) return HookResult.Continue;
-
-        if (!_config.Maps.TryGetValue(Server.MapName, out var entitiesMap)) return HookResult.Continue;
+        if (playersCount.Count >= _config.Players || !_config.Maps.TryGetValue(Server.MapName, out var entitiesMap))
+            return HookResult.Continue;
 
         foreach (var entity in entitiesMap)
         {
             var color = entity.Color;
 
-            SpawnProp(entity.ModelPath, new[] { color[0], color[1], color[2] },
+            SpawnProp(entity.ModelPath, color,
                 GetVectorFromString(entity.Origin), GetQAngleFromString(entity.Angles), entity.Scale);
         }
 
         Server.PrintToChatAll(
-            " " + ReplaceColorTags(_config.Message.Replace("{MINPLAYERS}", _config.Players.ToString())));
+            " " + _config.Message.Replace("{MINPLAYERS}", _config.Players.ToString()).ReplaceColorTags());
 
         return HookResult.Continue;
     }
@@ -87,8 +100,8 @@ public class BlockerPasses : BasePlugin
     private void SpawnProp(string modelPath, int[] color, Vector origin, QAngle angles, float? entityScale)
     {
         var prop = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic_override");
-
-        if (prop == null) return;
+        if (prop == null)
+            return;
 
         prop.Collision.SolidType = SolidType_t.SOLID_VPHYSICS;
         prop.Render = Color.FromArgb(color[0], color[1], color[2]);
@@ -101,6 +114,8 @@ public class BlockerPasses : BasePlugin
 
         if (entityScale != null && entityScale != 0.0f)
             bodyComponent.SceneNode.GetSkeletonInstance().Scale = entityScale.Value;
+
+        _allProps.Add(prop);
     }
 
     private Config LoadConfig()
@@ -177,31 +192,6 @@ public class BlockerPasses : BasePlugin
             JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true }));
 
         return config;
-    }
-
-    private string ReplaceColorTags(string input)
-    {
-        string[] colorPatterns =
-        {
-            "{DEFAULT}", "{WHITE}", "{DARKRED}", "{GREEN}", "{LIGHTYELLOW}", "{LIGHTBLUE}", "{OLIVE}", "{LIME}",
-            "{RED}", "{LIGHTPURPLE}", "{PURPLE}", "{GREY}", "{YELLOW}", "{GOLD}", "{SILVER}", "{BLUE}", "{DARKBLUE}",
-            "{BLUEGREY}", "{MAGENTA}", "{LIGHTRED}", "{ORANGE}"
-        };
-
-        string[] colorReplacements =
-        {
-            $"{ChatColors.Default}", $"{ChatColors.White}", $"{ChatColors.Darkred}", $"{ChatColors.Green}",
-            $"{ChatColors.LightYellow}", $"{ChatColors.LightBlue}", $"{ChatColors.Olive}", $"{ChatColors.Lime}",
-            $"{ChatColors.Red}", $"{ChatColors.LightPurple}", $"{ChatColors.Purple}", $"{ChatColors.Grey}",
-            $"{ChatColors.Yellow}", $"{ChatColors.Gold}", $"{ChatColors.Silver}", $"{ChatColors.Blue}",
-            $"{ChatColors.DarkBlue}", $"{ChatColors.BlueGrey}", $"{ChatColors.Magenta}", $"{ChatColors.LightRed}",
-            $"{ChatColors.Orange}"
-        };
-
-        for (var i = 0; i < colorPatterns.Length; i ++)
-            input = input.Replace(colorPatterns[i], colorReplacements[i]);
-
-        return input;
     }
 }
 
